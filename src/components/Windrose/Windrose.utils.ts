@@ -1,4 +1,4 @@
-import { WindroseData } from "./Windrose.constants";
+import { WindroseData } from "./Windrose.mock";
 
 
 
