@@ -3,6 +3,8 @@ import { WindroseData } from "./Windrose.mock";
 
 
 export const getChartData = (windroseData: WindroseData) => {
+  const { safeWorkingLoad, minimumBreakingLoad } = windroseData
+
   const chartData = windroseData.safetyLevels.map((safetyLevel) => {
 
     const safetyCategories = {
@@ -15,13 +17,15 @@ export const getChartData = (windroseData: WindroseData) => {
     // the total needs to be 12!
     safetyLevel.windForces.forEach((windForce) => {
 
-      const isSafe = windForce.lineForce < windroseData.safeWorkingLoad
-      const isCritical = windForce.lineForce > windroseData.safeWorkingLoad && windForce.lineForce < windroseData.minimumBreakingLoad
-      const isUnsafe = windForce.lineForce > windroseData.minimumBreakingLoad
+      const { lineForce, speedInBeaufort } = windForce
+
+      const isSafe = lineForce < safeWorkingLoad
+      const isCritical = lineForce > safeWorkingLoad && lineForce < minimumBreakingLoad
+      const isUnsafe = lineForce > minimumBreakingLoad
 
       //between 0/50% of MBL (750)
       if (isSafe) {
-        safetyCategories.safe = windForce.speedInBeaufort
+        safetyCategories.safe = speedInBeaufort
       }
 
       // between 50/100% of MBL (1500)
@@ -42,12 +46,7 @@ export const getChartData = (windroseData: WindroseData) => {
       ...safetyCategories,
       total: 12,
     }
-
   })
 
-
-
   return chartData
-
-
 };
